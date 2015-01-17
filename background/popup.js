@@ -10,12 +10,20 @@ function setupGroupsList(){
     var group = e.target.dataset;
 
     if ($(".chatroom[data-id='"+group.id+"']").size() == 0) {
-      $("#chatrooms").prepend("<div class='chatroom' data-id='"+group.id+"'><h4>"+group.name+"<button class='closebutton'>X</button></h4><ul></ul></div>");
+      $("#chatrooms").prepend("<div class='chatroom' data-id='"+group.id+"'><h4>"+group.name+"<button class='closebutton'>X</button></h4><div class='messages'><ul></ul></div></div>");
     }
+    setupCloseButtons();
+
     params = {
       group_id: group.id
     }
     messagesPoll(params);
+  });
+};
+
+function setupCloseButtons(){
+  $('body').on('click', '.closebutton', function(e) {
+    e.target.parentElement.parentElement.remove();
   });
 };
 
@@ -38,24 +46,39 @@ function groupsPoll(params) {
         });
 
       },
-      complete: groupsPoll
+      complete: groupsPoll(params)
     });
   }, 500);
 };
 
 function messagesPoll(params) {
-  params.last_updated_at = "time" // get last updated_at
   setTimeout(function () {
-    $.post({
+    $.ajax({
+      type: 'POST',
       dataType: 'json',
       data: params,
-      url: 'http://localhost:3000/v1/messages/foo',
+      url: 'http://localhost:3000/v1/messages/all',
       success: function (data) {
-        console.log("success");
-        $('#dummy').text(JSON.stringify(data));
+        data.forEach( function(message) {
+          $(".message[data-id='"+message.id+"']").remove() // remove old
+          $(".chatroom[data-id='"+params.group_id+"'] ul").prepend(htmlMessage(message));
+        });
       },
-      complete: messagesPoll
+      complete: messagesPoll(params)
     });
   }, 500);
 };
 
+function htmlMessage(message){
+  var json = message.body;
+  html = "<li class='message' data-id='"+message.id+"'>";
+  if (json.text != undefined){ //  Simple Text
+    html+="<p>"+json.text+"</p>"
+  } else if (json.votelist != undefined){ //voting list
+
+  }
+
+  html += "<p class='sender'>- "+message.sender+"</p>";
+  html += "</li>";
+  return html;
+}

@@ -1,6 +1,6 @@
 body {
   width: 800px;
-  height: 300px;
+  height: 400px;
   overflow: hidden;
 }
 
@@ -28,7 +28,7 @@ body {
 }
 
 #chatrooms {
-  background: #4a73ff;
+  border: #ddd 2px solid;
   width: 500px;
   display: inline-block;
   padding: 10px;
@@ -38,19 +38,52 @@ body {
 }
 
 .chatroom {
-  background: #4ff;
+  background: #eeeeff;
   height: 300px;
   width: 250px;
   display: inline-block;
-  padding: 10px;
+  padding: 5px;
   margin: 5px;
 }
 
 .chatroom h4{
-  background: #00f;
   width: auto;
+  padding: 5px;
+  margin: 5px 0px;
 }
 
 .chatroom h4 .closebutton{
   float: right;
 }
+
+.chatroom .messages{
+  overflow-y: scroll;
+  height: 225px;
+  border: #ddd 2px solid;
+}
+
+.chatroom ul{
+  padding: 0px;
+  list-style-type: none;
+}
+
+.chatroom li{
+  padding: 3px;
+  margin: 4px 3px;
+  background: #77eeff;
+}
+
+.chatroom li{
+  padding: 0px;
+}
+
+.chatroom li p{
+  margin: 0px;
+  padding: 0px;
+}
+
+.chatroom .sender{
+  font-style: italic;
+  color: #555;
+}
+
