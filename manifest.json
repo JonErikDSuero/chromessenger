@@ -1,0 +1,30 @@
+{
+  "name": "Chromessenger",
+  "description": "Messenger for Chrome",
+  "version": "1.0",
+
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ],
+
+  "background": {
+    "scripts": ["background/background.js"]
+  },
+
+  "content_scripts": [{
+    "css:": ["content_script/content_script.css"],
+    "matches": ["http://*/*", "https://*/*"],
+    "js": [
+      "content_script/jquery-2.1.1.min.js",
+      "content_script/domain.js",
+      "content_script/messenger.js",
+      "content_script/css.js",
+      "content_script/body.js",
+      "content_script/main.js"
+    ]
+  }],
+
+  "manifest_version": 2
+}
+
