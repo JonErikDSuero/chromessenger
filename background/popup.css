@@ -1,0 +1,56 @@
+body {
+  width: 800px;
+  height: 300px;
+  overflow: hidden;
+}
+
+#groupslist {
+  width: 225px;
+  overflow-y: scroll;
+  float: left;
+}
+
+#groupslist ul {
+  padding: 0px;
+}
+
+#groupslist li {
+  width: auto;
+  overflow-y: scroll;
+  padding: 5px;
+  border: #ddd 1px solid;
+  margin: 5px;
+}
+
+#groupslist li:hover {
+  background-color: #ccffff;
+  cursor: pointer;
+}
+
+#chatrooms {
+  background: #4a73ff;
+  width: 500px;
+  display: inline-block;
+  padding: 10px;
+  margin: 5px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.chatroom {
+  background: #4ff;
+  height: 300px;
+  width: 250px;
+  display: inline-block;
+  padding: 10px;
+  margin: 5px;
+}
+
+.chatroom h4{
+  background: #00f;
+  width: auto;
+}
+
+.chatroom h4 .closebutton{
+  float: right;
+}

@@ -1,6 +1,7 @@
 <html>
 
   <head>
+    <link rel="stylesheet" type="text/css" href="popup.css">
     <script src="../lib/jquery-2.1.1.min.js"></script>
     <script src="body.js"></script>
     <script src="domain.js"></script>
@@ -10,17 +11,19 @@
 
 <body>
 
-  <p id="dummy">Paragraph</p>
-  <div id='cmeBody'>
-    <div id='cmeContent'>
+  <div id="groupslist">
+    <h4>Chatrooms</h4>
+    <ul>
+    </ul>
+  </div>
+
+  <div id="chatrooms">
+    <div class='chatroom'>
+      <h4>New<button class="closebutton">X</button></h4>
       <ul>
       </ul>
     </div>
-    <div id='cmeInput'>
-      <textarea></textarea>
-      <button type='button'>Send</button>
-    </div>
-  </div>
+ </div>
 
 </body>
 </html>
