@@ -44,7 +44,6 @@ function groupsPoll(params) {
                                         ");
           }
         });
-
       },
       complete: groupsPoll(params)
     });
@@ -59,10 +58,12 @@ function messagesPoll(params) {
       data: params,
       url: 'http://localhost:3000/v1/messages/all',
       success: function (data) {
+        var chatroom = ".chatroom[data-id='"+params.group_id+"']"
         data.forEach( function(message) {
           $(".message[data-id='"+message.id+"']").remove() // remove old
-          $(".chatroom[data-id='"+params.group_id+"'] ul").prepend(htmlMessage(message));
+          $(chatroom+" ul").append(htmlMessage(message));
         });
+        $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
       },
       complete: messagesPoll(params)
     });
