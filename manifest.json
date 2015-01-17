@@ -12,24 +12,26 @@
   ],
 
   "background": {
-    "scripts": ["lib/jquery-2.1.1.min.js", "background/background.js"]
+    "scripts": ["background/background.js"]
   },
+
+  "content_scripts": [{
+    "css:": ["content_script/content_script.css"],
+    "matches": ["http://*/*", "https://*/*"],
+    "js": [
+      "content_script/jquery-2.1.1.min.js",
+      "content_script/domain.js",
+      "content_script/messenger.js",
+      "content_script/css.js",
+      "content_script/body.js",
+      "content_script/main.js"
+    ]
+  }],
+
   "browser_action": {
     "default_icon": "images/heart_off.png",
-    "default_popup": "background/background.html"
+    "default_popup": "background/popup.html"
   },
-  //"content_scripts": [{
-    //"css:": ["content_script/content_script.css"],
-    //"matches": ["http://*/*", "https://*/*"],
-    //"js": [
-      //"content_script/jquery-2.1.1.min.js",
-      //"content_script/domain.js",
-      //"content_script/messenger.js",
-      //"content_script/css.js",
-      //"content_script/body.js",
-      //"content_script/main.js"
-    //]
-  //}],
 
   "manifest_version": 2
 }
