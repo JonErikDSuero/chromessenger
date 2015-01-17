@@ -2,22 +2,22 @@ document.addEventListener('DOMContentLoaded', function () {
   params = {hello: "hi"}
   groupsPoll(params); // pass the last updated_at
 
+  setupGroupsList();
+});
 
-  $('body').on('click', '#groupslist li', function() {
+function setupGroupsList(){
+  $('body').on('click', '#groupslist li', function(e) {
+    var group = e.target.dataset;
+
+    if ($(".chatroom[data-id='"+group.id+"']").size() == 0) {
+      $("#chatrooms").prepend("<div class='chatroom' data-id='"+group.id+"'><h4>"+group.name+"<button class='closebutton'>X</button></h4><ul></ul></div>");
+    }
     params = {
-      group_id: $(this).data('id'),
+      group_id: group.id
     }
     messagesPoll(params);
-
-    $.post('/v1/video_sessions/graph_points', params, function(data){
-      for (var wave_type in data){
-        updateLineChart(data[wave_type], wave_type)
-      }
-      $('#waves_graphs').show()
-    });
   });
-
-});
+};
 
 function groupsPoll(params) {
   setTimeout(function () {
@@ -30,10 +30,10 @@ function groupsPoll(params) {
         data.forEach( function(group) {
           if ($("#groupslist ul").find("[data-id='" + group.id + "']").size() == 0) {
             $("#groupslist ul").prepend("\
-                                    <li class='group' data-id='"+ group.id +"' data-status='new'>\
-                                    "+group.name+"\
-                                    </li>\
-                                    ");
+                                        <li class='group' data-id='"+ group.id +"' data-status='new' data-name='"+ group.name +"'>\
+                                        "+group.name+"\
+                                        </li>\
+                                        ");
           }
         });
 
