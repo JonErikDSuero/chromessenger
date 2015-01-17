@@ -8,22 +8,13 @@
     "tabs",
     "identity",
     "background",
-    "https://www.facebook.com/",
-    "https://graph.facebook.com/"
+    "storage"
   ],
 
-  //"background": {
-    //"scripts": ["lib/jquery-2.1.1.min.js", "background/background.js"]
-    ////"persistent": false
-  //},
-  "browser_action": {
-    "default_icon": "images/heart_off.png",
-    "default_popup": "background/background.html"
+  "background": {
+    "scripts": ["background/background.js"]
   },
-  //"background": {
-    //"page": "background/background.html"
-    ////"scripts": ["background/background.js", "main.js"]
-  //},
+
   "content_scripts": [{
     "css:": ["content_script/content_script.css"],
     "matches": ["http://*/*", "https://*/*"],
@@ -36,7 +27,10 @@
       "content_script/main.js"
     ]
   }],
-
+  "browser_action": {
+    "default_icon": "images/heart_off.png",
+    "default_popup": "background/popup.html"
+  },
   "manifest_version": 2
 }
 

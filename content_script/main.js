@@ -7,6 +7,7 @@ CME_css.apply();
 // CME_body.setup();
 var id = 1;
 
+
 function getSelectionText() {
     var text = "";
     if (window.getSelection) {
@@ -31,11 +32,6 @@ jQuery.fn.highlight = function (str, className) {
 };
 
 $(function(){
-	console.log($(document).height());
-	
-	// $(document).on('scroll', function(){
-	// 	console.log($(document).scrollTop());
-	// });
 	$('body').addClass('comments-right');
 	$('body').prepend(" \
                         <div id='comments-body'> \

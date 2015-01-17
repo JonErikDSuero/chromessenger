@@ -11,11 +11,11 @@ var CME_messenger = (function() {
             var id = element._id.$oid
             if ($("#cmeBody ul").find("[data-id='" + id + "']").size() == 0) {
               $("#cmeBody ul").append("\
-                <li data-id="+id+">\
-                  "+JSON.stringify(element.body)+"\
-                </li>\
-              ");
-           }
+                                      <li data-id="+id+">\
+                                      "+JSON.stringify(element.body)+"\
+                                      </li>\
+                                      ");
+            }
           });
         });
       });
