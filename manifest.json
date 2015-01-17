@@ -1,0 +1,43 @@
+{
+  "name": "Chromessenger",
+  "description": "Messenger for Chrome",
+  "version": "1.0",
+
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "identity",
+    "background",
+    "https://www.facebook.com/",
+    "https://graph.facebook.com/"
+  ],
+
+  //"background": {
+    //"scripts": ["lib/jquery-2.1.1.min.js", "background/background.js"]
+    ////"persistent": false
+  //},
+  "browser_action": {
+    "default_icon": "images/heart_off.png",
+    "default_popup": "background/background.html"
+  },
+  //"background": {
+    //"page": "background/background.html"
+    ////"scripts": ["background/background.js", "main.js"]
+  //},
+
+  //"content_scripts": [{
+    //"css:": ["content_script/content_script.css"],
+    //"matches": ["http://*/*", "https://*/*"],
+    //"js": [
+      //"content_script/jquery-2.1.1.min.js",
+      //"content_script/domain.js",
+      //"content_script/messenger.js",
+      //"content_script/css.js",
+      //"content_script/body.js",
+      //"content_script/main.js"
+    //]
+  //}],
+
+  "manifest_version": 2
+}
+
