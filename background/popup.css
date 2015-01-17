@@ -87,3 +87,10 @@ body {
   color: #555;
 }
 
+.chatroom .chatinput{
+  width: 100%;
+  padding: 0px;
+  resize: none;
+}
+
+
