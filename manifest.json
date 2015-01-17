@@ -5,27 +5,6 @@
 
   "permissions": [
     "activeTab",
-<<<<<<< HEAD
-    "tabs"
-  ],
-
-  "background": {
-    "scripts": ["background/background.js"]
-  },
-
-  "content_scripts": [{
-    "css:": ["content_script/content_script.css"],
-    "matches": ["http://*/*", "https://*/*"],
-    "js": [
-      "content_script/jquery-2.1.1.min.js",
-      "content_script/domain.js",
-      "content_script/messenger.js",
-      "content_script/css.js",
-      "content_script/body.js",
-      "content_script/main.js"
-    ]
-  }],
-=======
     "tabs",
     "identity",
     "background",
@@ -45,20 +24,18 @@
     //"page": "background/background.html"
     ////"scripts": ["background/background.js", "main.js"]
   //},
-
-  //"content_scripts": [{
-    //"css:": ["content_script/content_script.css"],
-    //"matches": ["http://*/*", "https://*/*"],
-    //"js": [
-      //"content_script/jquery-2.1.1.min.js",
-      //"content_script/domain.js",
-      //"content_script/messenger.js",
-      //"content_script/css.js",
-      //"content_script/body.js",
-      //"content_script/main.js"
-    //]
-  //}],
->>>>>>> 827b1c56a498e4cfdd2b51611133cc73101a407f
+  "content_scripts": [{
+    "css:": ["content_script/content_script.css"],
+    "matches": ["http://*/*", "https://*/*"],
+    "js": [
+      "content_script/jquery-2.1.1.min.js",
+      "content_script/domain.js",
+      "content_script/messenger.js",
+      "content_script/css.js",
+      "content_script/body.js",
+      "content_script/main.js"
+    ]
+  }],
 
   "manifest_version": 2
 }

@@ -33,6 +33,24 @@ var CME_css = (function () {
     background-color: #ECECEC; \
     z-index: 10000; \
     text-align: center; \
+    -webkit-touch-callout: none; \
+    -webkit-user-select: none; \
+    -khtml-user-select: none; \
+    -moz-user-select: none; \
+    -ms-user-select: none; \
+    user-select: none; \
+  } \
+  .comments-right #comments-body { \
+    top: 0; \
+    right: 0; \
+    bottom: 0; \
+    width: 300px; \
+  } \
+  .comments-left #comments-body { \
+    top: 0; \
+    left: 0; \
+    bottom: 0; \
+    width: 300px; \
   } \
   #comments-body h1 { \
     position: relative; \
@@ -64,6 +82,9 @@ var CME_css = (function () {
     border-left-color: rgba(102,102,102,0.2); \
     left: 0.25em; \
   } \
+  .comments-right .arrow-e{ \
+    display: none; \
+  } \
   .arrow-e:hover { \
     border-left-color: rgba(102,102,102,0.4); \
     cursor: pointer; \
@@ -74,9 +95,31 @@ var CME_css = (function () {
     border-right-color: rgba(102,102,102,0.2); \
     right: 0.25em; \
   } \
+  .comments-left .arrow-w{ \
+    display: none; \
+  } \
   .arrow-w:hover { \
     border-right-color: rgba(102,102,102,0.4); \
     cursor: pointer; \
+  } \
+  #activate-comment { \
+    position: fixed; \
+    width: 200px; \
+    bottom: 0; \
+    left: 0; \
+    font-size: 14px; \
+  } \
+  #activate-comment span { \
+    opacity: 0.4; \
+    display:inline-block; \
+    width: 49%; \
+    background-color: rgba(102,102,102,0.4); \
+    color: white; \
+  } \
+  #activate-comment span.unactive { \
+    cursor: pointer; \
+    opacity: 1; \
+    background-color: rgba(102,102,102,1); \
   } \
   ";
 
