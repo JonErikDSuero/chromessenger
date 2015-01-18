@@ -153,10 +153,6 @@ function setupTextAreas(){
 
 
 function groupsPoll(params) {
-  var alltimes = $('.group').map(function(){
-    return $(this).data('updatedat');
-  }).get();
-  params.last_updated = alltimes.sort().slice(-1)[0];
   setTimeout(function () {
     $.ajax({
       type: 'POST',
@@ -188,11 +184,18 @@ function messagesPoll(params) {
       data: params,
       url: domain+'groups/get_messages/',
       success: function (data) {
-        data.messages.forEach( function(message) {
-          $(".message[data-id='"+message.msg_id+"']").remove(); // remove old
-          $(chatroom+" ul").prepend(htmlMessage(message));
-        });
-        $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
+        if (data.messages.length > 0) {
+          data.messages.forEach( function(message) {
+            if ($(".message[data-id='"+message.msg_id+"']").size() == 0) {
+              $(chatroom+" ul").append(htmlMessage(message));
+              $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
+            }
+            if (params.latest_id < message.msg_id) {
+              params.latest_id = message.msg_id
+            }
+          });
+          console.log(params.latest_id);
+        }
       },
       complete: messagesPoll(params)
     });
@@ -201,9 +204,13 @@ function messagesPoll(params) {
 
 function htmlMessage(message){
   var json = message.text;
-  console.log(message)
-  html = "<li class='message' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
 
+  if(message.sender == username){
+      html = "<li class='message me' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
+  } else {
+      html = "<li class='message not-me' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
+  }
+  
   if (json.text != undefined){ //  Simple Text
     html+="<p>"+json.text+"</p>";
   } else { //voting list
@@ -216,7 +223,6 @@ function htmlMessage(message){
         html+="<input type='radio' name='votes' onchange='onChangeListener(event);' value='" + obj[index].name + "'" + isChecked + ">" + obj[index].name + "<br>";
     }
   }
-
   html += "<p class='sender'>- "+message.sender+"</p>";
   html += "</li>";
   return html;

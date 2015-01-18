@@ -112,7 +112,34 @@ $(function(){
 		$('body').removeClass('comments-right').addClass('comments-left');
 	});
 
-	
+	$(document).on('mouseup', function (e) {
+		// yelp list
+		if(getSelectionText().length >= 2) {
+			var voting_dom = '';
+			var voting_dom_target = e.target;
+			while(voting_dom_target != null && 
+				voting_dom_target.tagName != "UL" && 
+				voting_dom_target.tagName != "OL" &&
+				voting_dom_target.tagName != "TBODY") {
+					if(voting_dom != '')
+						voting_dom = voting_dom_target.tagName.toLowerCase() + '>' + voting_dom;
+					else
+						voting_dom = voting_dom_target.tagName.toLowerCase();
+					voting_dom_target = voting_dom_target.parentElement;
+			}
+			console.log('voting dom: '+voting_dom);
+			var voting_list = [];
+			$(voting_dom).each(function() {
+				if($(this).text().match(/[0-9a-zA-Z]+/)) {
+		        	voting_list.push($(this).text());
+		    	}
+		    });
+
+			chrome.runtime.sendMessage({method: "setLocalStorage", key: "voting-list-dom", data: voting_list.join('#:#')}, function(response){
+				console.log(response);
+			});
+		}
+	});
 
 	$(document).on('mouseup', 'body.comment-on',function (e){
 		var text = getSelectionText();
@@ -187,28 +214,6 @@ $(function(){
 			});
 			request.fail(function(jqXHR, textStatus){
 				console.log(textStatus);
-			});
-
-			// yelp list
-			var voting_dom = '';
-			var voting_dom_target = e.target;
-			while(voting_dom_target != null && 
-				voting_dom_target.tagName != "UL" && 
-				voting_dom_target.tagName != "OL") {
-					if(voting_dom != '')
-						voting_dom = voting_dom_target.tagName.toLowerCase() + '>' + voting_dom;
-					else
-						voting_dom = voting_dom_target.tagName.toLowerCase();
-					voting_dom_target = voting_dom_target.parentElement;
-			}
-			console.log('voting dom: '+voting_dom);
-			var voting_list = [];
-			$(voting_dom).each(function() {
-		        voting_list.push($(this).text());
-		    });
-
-			chrome.runtime.sendMessage({method: "setLocalStorage", key: "voting-list-dom", data: voting_list.join('#:#')}, function(response){
-				console.log(response);
 			});
 	    }
 	});
