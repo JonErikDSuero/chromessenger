@@ -1,13 +1,29 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   width: 800px;
   height: 400px;
+  margin: 0;
+  padding: 10px;
+}
+html{
+  width: 800px;
+  height: 400px;
   overflow: hidden;
+  background-color: rgba(0,153,204,0.7);
 }
 
 #groupslist {
   width: 225px;
   overflow-y: scroll;
   float: left;
+  height: 98%;
+  margin: 5px 0;
+  background-color: rgba(85,85,85,0.8);
+  padding: 5px 10px;
+  border-radius: 5px;
 }
 
 #groupslist ul {
@@ -20,35 +36,44 @@ body {
   padding: 5px;
   border: #ddd 1px solid;
   margin: 5px;
+  background-color: #888;
+  color: white;
+}
+
+#groupslist h4{
+  color: white;
 }
 
 #groupslist li:hover {
-  background-color: #ccffff;
+  background-color: #aaa;
   cursor: pointer;
 }
 
 #chatrooms {
   border: #ddd 2px solid;
-  width: 500px;
+  width: 544px;
   display: inline-block;
   padding: 10px;
   margin: 5px;
   overflow-x: auto;
   white-space: nowrap;
+  border-radius: 3px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .3);
+  background-color: #eee;
 }
 
 .chatroom {
-  background: #eeeeff;
-  height: 300px;
+  background: #f6f7f8;
+  height: 345px;
   width: 250px;
   display: inline-block;
   padding: 5px;
-  margin: 5px;
+  margin: 1px;
+  border: 1px solid #ccc;
 }
 
 .chatroom h4{
   width: auto;
-  padding: 5px;
   margin: 5px 0px;
 }
 
@@ -57,9 +82,11 @@ body {
 }
 
 .chatroom .messages{
-  overflow-y: scroll;
-  height: 225px;
+  margin: 0 5px;
+  height: 278px;
   border: #ddd 2px solid;
+  background-color: #e9eaed;
+  overflow-y: scroll;
 }
 
 .chatroom ul{
@@ -69,17 +96,29 @@ body {
 
 .chatroom li{
   padding: 3px;
-  margin: 4px 3px;
-  background: #77eeff;
+  margin: 5px 3px;
 }
 
-.chatroom li{
-  padding: 0px;
+li.message.me {
+  background-image: webkit-gradient(linear, center bottom, center top, from(#c7defe), to(#e7f1fe));;
+  background-image: -webkit-linear-gradient(bottom, #c7defe, #e7f1fe); 
+  border: 1px solid #c7defe;
+}
+
+li.message.not-me{
+  background-image: -webkit-linear-gradient(bottom, #f2f2f2, #fff);
+  background-image: -webkit-gradient(linear, center bottom, center top, from(#f2f2f2), to(#fff));
+  border: 1px solid #f2f2f2;
+}
+
+.chatroom > input {
+  margin: 3px;
 }
 
 .chatroom li p{
   margin: 0px;
   padding: 0px;
+  white-space: pre-wrap;
 }
 
 .chatroom .sender{
@@ -88,8 +127,18 @@ body {
 }
 
 .chatroom .chatinput, #newchatinput{
-  width: 100%;
+  width: 96%;
   padding: 0px;
   resize: none;
+  margin: 0 5px;
+  border: 1px solid #ddd;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
+
+textarea:focus {
+  border: none;
+  outline: none;
+}
+
 

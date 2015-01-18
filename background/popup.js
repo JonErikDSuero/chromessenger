@@ -201,13 +201,16 @@ function messagesPoll(params) {
 
 function htmlMessage(message){
   var json = message.text;
-  html = "<li class='message' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
+  if(message.sender == username){
+      html = "<li class='message me' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
+  } else {
+      html = "<li class='message not-me' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
+  }
   if (json.text != undefined){ //  Simple Text
     html+="<p>"+json.text+"</p>";
   } else if (json.votelist != undefined){ //voting list
 
   }
-
   html += "<p class='sender'>- "+message.sender+"</p>";
   html += "</li>";
   return html;
