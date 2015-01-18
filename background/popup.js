@@ -139,7 +139,7 @@ function setupTextAreas(){
         params = {
           user_id: user_id,
           group_id: focused.parent().data("id"),
-          text: json
+          text: JSON.stringify(json)
         }
 
         $.post(domain+"groups/add_message/", params, function(data){
@@ -180,11 +180,7 @@ function groupsPoll(params) {
 };
 
 function messagesPoll(params) {
-  var chatroom = ".chatroom[data-id='"+params.group_id+"']"
-  var alltimes = $(chatroom+" .message").map(function(){
-    return $(this).data('updatedat');
-  }).get();
-  params.last_updated = alltimes.sort().slice(-1)[0];
+  var chatroom = ".chatroom[data-id='"+params.group_id+"']";
   setTimeout(function () {
     $.ajax({
       type: 'POST',
@@ -192,10 +188,9 @@ function messagesPoll(params) {
       data: params,
       url: domain+'groups/get_messages/',
       success: function (data) {
-        debugger;
         data.messages.forEach( function(message) {
-          $(".message[data-id='"+message.id+"']").remove() // remove old
-          $(chatroom+" ul").append(htmlMessage(message));
+          $(".message[data-id='"+message.msg_id+"']").remove(); // remove old
+          $(chatroom+" ul").prepend(htmlMessage(message));
         });
         $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
       },
