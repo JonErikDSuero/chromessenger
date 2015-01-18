@@ -1,5 +1,4 @@
 var domain = "https://morning-refuge-4780.herokuapp.com/";
-//var domain = "http://localhost:8000/";
 var username = undefined;
 var user_id = undefined;
 
@@ -85,8 +84,9 @@ function createMessage(text){
     json = {list: list}
   } else if (text == ":vote") {
     json = [];
-    list.forEach(function(entry) {
-      json.push({name: entry, count: 0});
+    var votingList = localStorage["voting-list-dom"].split("#:#");
+    votingList.forEach(function(entry) {
+      json.push({name: entry, voters: []});
     });
   } else {
     json = {text: text};
@@ -204,21 +204,36 @@ function messagesPoll(params) {
 
 function htmlMessage(message){
   var json = message.text;
+
   if(message.sender == username){
       html = "<li class='message me' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
   } else {
       html = "<li class='message not-me' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
   }
+  
   if (json.text != undefined){ //  Simple Text
     html+="<p>"+json.text+"</p>";
-  } else if (json.votelist != undefined){ //voting list
-
+  } else { //voting list
+    for (index = 0; index < json.length; ++index) {
+        var isChecked = "unchecked";
+        if ($.inArray(user_id, json[index].voters) > -1) {
+            isChecked = "checked";
+        }
+        html+="<input type='radio' name='votes' onchange='onChangeListener(event);' value='" + json[index].name + "'" + isChecked + ">" + json[index].name + "<br>";
+    }
   }
   html += "<p class='sender'>- "+message.sender+"</p>";
   html += "</li>";
   return html;
 }
 
+function onChangeListener(event) {
+    if (event != null) {
+        params = {choice: event.target.value, user_id: user_id};
+        $.post(domain+"groups/update_message/", params, function(data){
+        });            
+    }
+}
 
 var selectedFriends = [];
 var friends = [];

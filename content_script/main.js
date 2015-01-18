@@ -8,6 +8,17 @@ CME_css.apply();
 var id = 1;
 var latest_id;
 
+var username;
+var user_id;
+
+chrome.storage.local.get(['username','user_id'], function(data) {
+	username = data.username;
+	user_id = data.user_id;
+});
+
+
+
+
 function getTime(){
 	var current = new Date();
 	time_fetch = current.toUTCString();
@@ -58,15 +69,15 @@ function populateCommentBody(){
 		type: "POST",
 		data: { 
 			"url" : window.location.href,
-			"group_id" : "1",
-			"id_latest": latest_id
+			"group_id" : "1"
 		},
 		dataType: "json"
 	});
 	request.done(function(data){
+		if(data.comments.length == 0){
+			return;
+		}
 		latest_id = data.comments[0].comment_id;
-		console.log(data);
-		console.log(latest_id);
 		var i;
 		for(i = 0; i < data.comments.length; i++){
 			placeComment(data.comments[i]);
@@ -79,10 +90,12 @@ function populateCommentBody(){
 
 $(function(){
 	populateCommentBody();
-	$('body').addClass('comments-right');
+	$('body').addClass('comments-right comments-closed');
 	$('body').prepend(" \
+		                <div id='open-the-comments'>OPEN COMMENTS</div> \
                         <div id='comments-body'> \
                         	<div class='title'> \
+                        		<span class='close-thik'></span> \
                         		<span class='arrow-w'></span><h1>Comments</h1><span class='arrow-e'></span> \
                         	</div> \
                         	<div id='activate-comment'> \
@@ -96,6 +109,16 @@ $(function(){
 		$('body').addClass('comment-on');
 		$(this).removeClass('unactive');
 		$('#activate-comment .deactivate').addClass('unactive');
+	});
+
+	$('body').on('click', '.close-thik', function(){
+		$('body').removeClass('comments-open');
+		$('body').addClass('comments-closed');
+	});
+
+	$('body').on('click', '#open-the-comments', function(){
+		$('body').addClass('comments-open');
+		$('body').removeClass('comments-closed');
 	});
 
 	$('body').on('click', '#activate-comment .deactivate.unactive', function(){
@@ -144,8 +167,6 @@ $(function(){
 
 	$(document).on('mouseup', 'body.comment-on',function (e){
 		var text = getSelectionText();
-		console.log(text);
-
 	    if(text.length < 2){
 	    	return;
 	    } else {
@@ -181,9 +202,9 @@ $(function(){
 	    		selectorArr[parentSel.length-1] = selectorArr[parentSel.length-1]+":nth-of-type("+childNum+")";
 	    	}
 	    	console.log(selectorArr);
-	    	// if(selectorArr[0] == 'div#comments-body' || selectorArr[0] == 'div#activate-comment'){
-	    	// 	return;
-	    	// }
+	    	if(selectorArr[0] == 'div#comments-body'){
+	    		return;
+	    	}
 	    	var selector = selectorArr.join(" > ");
 	    	$(selector).addClass('highlights');
 
@@ -197,7 +218,7 @@ $(function(){
 				data: { 
 					"selector" : selector,
 					"url" : window.location.href,
-					"author_id" : "1",
+					"author_id" : user_id,
 					"group_id" : "1",
 					"comment" : commentText
 				},
@@ -205,13 +226,6 @@ $(function(){
 			});
 			request.done(function(data){
 				console.log(data);
-				$('#comments-body').prepend(" \
-				<div class='comment' id='new-"+id+"'>"+commentText+"</div> \
-		    	").find('#new-'+data.id).css({
-		    		position: "absolute",
-		    		top: $(selector).offset().top+"px"
-		    	});
-		    	id++;
 			});
 			request.fail(function(jqXHR, textStatus){
 				console.log(textStatus);
@@ -231,7 +245,6 @@ $(function(){
 			dataType: "json"
 		});
 		request.done(function(data){
-			console.log(latest_id);
 			if(data.comments.length == 0){
 				return;
 			}
