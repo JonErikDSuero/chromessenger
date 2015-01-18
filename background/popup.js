@@ -153,10 +153,6 @@ function setupTextAreas(){
 
 
 function groupsPoll(params) {
-  var alltimes = $('.group').map(function(){
-    return $(this).data('updatedat');
-  }).get();
-  params.last_updated = alltimes.sort().slice(-1)[0];
   setTimeout(function () {
     $.ajax({
       type: 'POST',
@@ -189,10 +185,14 @@ function messagesPoll(params) {
       url: domain+'groups/get_messages/',
       success: function (data) {
         data.messages.forEach( function(message) {
-          $(".message[data-id='"+message.msg_id+"']").remove(); // remove old
           $(chatroom+" ul").prepend(htmlMessage(message));
         });
-        $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
+        if (data.messages.length > 0) {
+          console.log(data.messages);
+          $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
+          params.latest_id = data.messages.slice(-1)[0].msg_id
+          console.log(params.latest_id);
+        }
       },
       complete: messagesPoll(params)
     });
