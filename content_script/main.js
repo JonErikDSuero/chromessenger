@@ -234,29 +234,33 @@ $(function(){
 	});
 
 	setInterval(function(){
-		var request = $.ajax({
-			url: "https://morning-refuge-4780.herokuapp.com/groups/get_comments/",
-			type: "POST",
-			data: { 
-				"url" : window.location.href,
-				"group_id" : "1",
-				"latest_id": latest_id
-			},
-			dataType: "json"
-		});
-		request.done(function(data){
-			if(data.comments.length == 0){
-				return;
-			}
-			latest_id = data.comments[0].comment_id;
-			var i;
-			for(i = 0; i < data.comments.length; i++){
-				placeComment(data.comments[i]);
-			}
-		});
-		request.fail(function(jqXHR, textStatus){
-			console.log(textStatus);
-		});
+		console.log("interval");
+		if($('body').hasClass('comments-open')){
+			console.log("ajax");
+			var request = $.ajax({
+				url: "https://morning-refuge-4780.herokuapp.com/groups/get_comments/",
+				type: "POST",
+				data: { 
+					"url" : window.location.href,
+					"group_id" : "1",
+					"latest_id": latest_id
+				},
+				dataType: "json"
+			});
+			request.done(function(data){
+				if(data.comments.length == 0){
+					return;
+				}
+				latest_id = data.comments[0].comment_id;
+				var i;
+				for(i = 0; i < data.comments.length; i++){
+					placeComment(data.comments[i]);
+				}
+			});
+			request.fail(function(jqXHR, textStatus){
+				console.log(textStatus);
+			});
+		}
 	}, 2000);
 
 });
