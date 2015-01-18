@@ -85,6 +85,7 @@ function createMessage(text){
     json = {list: list}
   } else if (text == ":vote") {
     json = [];
+    console.log(localStorage["voting-list-dom"]);
     list.forEach(function(entry) {
       json.push({name: entry, count: 0});
     });
