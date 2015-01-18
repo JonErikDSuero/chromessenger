@@ -184,13 +184,14 @@ function messagesPoll(params) {
       data: params,
       url: domain+'groups/get_messages/',
       success: function (data) {
-        data.messages.forEach( function(message) {
-          $(chatroom+" ul").prepend(htmlMessage(message));
-        });
         if (data.messages.length > 0) {
           console.log(data.messages);
+          data.messages.forEach( function(message) {
+            $(chatroom+" ul").prepend(htmlMessage(message));
+            if params.latest_id < message.msg_id:
+              params.latest_id = message.msg_id
+          });
           $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
-          params.latest_id = data.messages.slice(-1)[0].msg_id
           console.log(params.latest_id);
         }
       },
