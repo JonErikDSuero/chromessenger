@@ -22,7 +22,7 @@ var CME_css = (function () {
   } \
   .highlights { \
     size: inherit; \
-    background-color: yellow; \
+    background-color: rgba(255,247,148,0.9); \
   } \
   #comments-body{ \
     position: absolute; \
@@ -30,7 +30,7 @@ var CME_css = (function () {
     right: 0; \
     bottom: 0; \
     width: 300px; \
-    background-color: #ECECEC; \
+    background-color: rgba(236,236,236,0.9); \
     z-index: 10000; \
     text-align: center; \
     -webkit-touch-callout: none; \
@@ -45,12 +45,14 @@ var CME_css = (function () {
     right: 0; \
     bottom: 0; \
     width: 300px; \
+    box-shadow: -3px 0px 15px rgba(0,0,0,0.3); \
   } \
   .comments-left #comments-body { \
     top: 0; \
     left: 0; \
     bottom: 0; \
     width: 300px; \
+    box-shadow: 3px 0px 15px rgba(0,0,0,0.3); \
   } \
   #comments-body h1 { \
     position: relative; \
@@ -60,54 +62,82 @@ var CME_css = (function () {
     font-size: 25px; \
     color: #333; \
   } \
+  #comments-body .comment { \
+    background-color: rgba(255,247,148,0.5); \
+    max-width: 260px; \
+    padding: 3px; \
+    font-size: 14px; \
+    border-radius: 3px; \
+    border: 1px solid #ddd; \
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3); \
+  } \
+  .comment span { \
+    position: absolute; \
+    font-size: 11px; \
+    color: #2153BF; \
+    left: 2px; \
+    top: -15px; \
+  } \
+  .comments-left .comment { \
+    right: 20px; \
+  } \
+  .comments-right .comment { \
+    left: 20px; \
+  } \
   .arrow-n, \
   .arrow-e, \
   .arrow-s, \
   .arrow-w { \
-  border-style: dashed; \
-  border-color: transparent; \
-  border-width: 0.53em; \
-  display: -moz-inline-box; \
-  display: inline-block; \
-  font-size: 20px; \
-  height: 0; \
-  line-height: 0; \
-  position: relative; \
-  vertical-align: middle; \
-  width: 0; \
+    border-style: dashed; \
+    border-color: transparent; \
+    border-width: 0.53em; \
+    display: -moz-inline-box; \
+    display: inline-block; \
+    font-size: 20px; \
+    height: 0; \
+    line-height: 0; \
+    position: relative; \
+    vertical-align: middle; \
+    width: 0; \
   } \
   .arrow-e { \
     border-left-width: 1em; \
     border-left-style: solid; \
-    border-left-color: rgba(102,102,102,0.2); \
+    border-left-color: rgba(102,102,102,0.4); \
     left: 0.25em; \
+    z-index: 30; \
   } \
   .comments-right .arrow-e{ \
     display: none; \
   } \
   .arrow-e:hover { \
-    border-left-color: rgba(102,102,102,0.4); \
+    border-left-color: rgba(102,102,102,0.8); \
     cursor: pointer; \
   } \
   .arrow-w { \
     border-right-width: 1em; \
     border-right-style: solid; \
-    border-right-color: rgba(102,102,102,0.2); \
+    border-right-color: rgba(102,102,102,0.4); \
     right: 0.25em; \
   } \
   .comments-left .arrow-w{ \
     display: none; \
   } \
   .arrow-w:hover { \
-    border-right-color: rgba(102,102,102,0.4); \
+    border-right-color: rgba(102,102,102,0.8); \
     cursor: pointer; \
   } \
   #activate-comment { \
     position: fixed; \
     width: 200px; \
     bottom: 0; \
-    left: 0; \
     font-size: 14px; \
+  } \
+  .comments-right #activate-comment{ \
+    left: 0; \
+  } \
+  .comments-left #activate-comment { \
+    right: 0; \
   } \
   #activate-comment span { \
     opacity: 0.4; \

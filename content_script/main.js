@@ -6,7 +6,12 @@ CME_css.apply();
 
 // CME_body.setup();
 var id = 1;
+var time_fetch;
 
+function getTime(){
+	var current = new Date();
+	time_fetch = current.toUTCString();
+}
 
 function getSelectionText() {
     var text = "";
@@ -31,7 +36,45 @@ jQuery.fn.highlight = function (str, className) {
     });
 };
 
+function placeComment(data){
+	var selector = data.selector;
+	var author = data.author;
+	var comment = data.comment;
+	var comment_id = data.comment_id;
+	$('#comments-body').prepend(" \
+	<div class='comment' id='comment-"+comment_id+"'>"+comment+
+	"<span>"+author+"</span></div> \
+	").find('#comment-'+comment_id).css({
+		position: "absolute",
+		top: $(selector).offset().top+"px"
+	});
+	$(selector).addClass('highlights');
+}
+
+function populateCommentBody(){
+	var request = $.ajax({
+		url: "https://morning-refuge-4780.herokuapp.com/groups/get_comments/",
+		type: "POST",
+		data: { 
+			"url" : window.location.href,
+			"group_id" : "1",
+		},
+		dataType: "json"
+	});
+	request.done(function(data){
+		console.log(data);
+		var i;
+		for(i = 0; i < data.comments.length; i++){
+			placeComment(data.comments[i]);
+		}
+	});
+	request.fail(function(jqXHR, textStatus){
+		console.log(textStatus);
+	});
+}
+
 $(function(){
+	populateCommentBody();
 	$('body').addClass('comments-right');
 	$('body').prepend(" \
                         <div id='comments-body'> \
@@ -57,14 +100,15 @@ $(function(){
 		$('#activate-comment .activate').addClass('unactive');
 	});
 
-	$('body.comments-right').on('click', '.arrow-w', function(){
+	$(document).on('click', 'body.comments-left .arrow-e', function(){
+		$('body').removeClass('comments-left').addClass('comments-right');
+	});
+
+	$(document).on('click', 'body.comments-right .arrow-w', function(){
 		$('body').removeClass('comments-right').addClass('comments-left');
 	});
 
-	$('body.comments-left').on('click', '.arrow-e', function(){
-		console.log("HASD");
-		$('body').removeClass('comments-left').addClass('comments-right');
-	});
+	
 
 	$(document).on('mouseup', 'body.comment-on',function (e){
 		var text = getSelectionText();
@@ -133,7 +177,6 @@ $(function(){
 				$('#comments-body').prepend(" \
 				<div class='comment' id='new-"+id+"'>"+commentText+"</div> \
 		    	").find('#new-'+id).css({
-		    		backgroundColor: "yellow",
 		    		position: "absolute",
 		    		top: $(selector).offset().top+"px"
 		    	});
@@ -144,5 +187,28 @@ $(function(){
 			});
 	    }
 	});
+
+	setTimeout(function(){
+		var request = $.ajax({
+			url: "https://morning-refuge-4780.herokuapp.com/groups/get_comments/",
+			type: "POST",
+			data: { 
+				"url" : window.location.href,
+				"group_id" : "1",
+				"time": getTime()
+			},
+			dataType: "json"
+		});
+		request.done(function(data){
+			time_fetch = getTime();
+			var i;
+			for(i = 0; i < data.comments.length; i++){
+				placeComment(data.comments[i]);
+			}
+		});
+		request.fail(function(jqXHR, textStatus){
+			console.log(textStatus);
+		});
+	}, 1000);
 
 });
