@@ -11,6 +11,7 @@ var time_fetch;
 function getTime(){
 	var current = new Date();
 	time_fetch = current.toUTCString();
+	return time_fetch;
 }
 
 function getSelectionText() {
@@ -172,6 +173,7 @@ $(function(){
 				dataType: "json"
 			});
 			request.done(function(data){
+				console.log(data);
 				$('#comments-body').prepend(" \
 				<div class='comment' id='new-"+id+"'>"+commentText+"</div> \
 		    	").find('#new-'+id).css({
@@ -208,7 +210,7 @@ $(function(){
 	    }
 	});
 
-	setTimeout(function(){
+	setInterval(function(){
 		var request = $.ajax({
 			url: "https://morning-refuge-4780.herokuapp.com/groups/get_comments/",
 			type: "POST",
