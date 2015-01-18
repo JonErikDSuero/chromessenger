@@ -1,5 +1,5 @@
-//var domain = "https://morning-refuge-4780.herokuapp.com/";
-var domain = "http://localhost:8000/";
+var domain = "https://morning-refuge-4780.herokuapp.com/";
+//var domain = "http://localhost:8000/";
 var username = undefined;
 var user_id = undefined;
 
@@ -22,7 +22,7 @@ function afterLoggedIn(){
   $("#login").hide();
   $("#messenger").show();
 
-  //groupsPoll({user_id: user_id}); // pass the last updated_at
+  groupsPoll({user_id: user_id}); // pass the last updated_at
   setupGroupsList();
   setupTokenInputs();
   setupTextAreas();
@@ -107,9 +107,6 @@ function setupTextAreas(){
         return {id: f.id, name: f.name};
       });
       members.push({id: user_id, name: username});
-      console.log(members);
-      console.log(json);
-      debugger;
 
       if (json != undefined) {
         params = {
@@ -142,7 +139,7 @@ function setupTextAreas(){
         params = {
           user_id: user_id,
           group_id: focused.parent().data("id"),
-          text: json
+          text: JSON.stringify(json)
         }
 
         $.post(domain+"groups/add_message/", params, function(data){
@@ -167,7 +164,7 @@ function groupsPoll(params) {
       data: params,
       url: domain+'/groups/get_groups/',
       success: function (data) {
-        data.forEach( function(group) {
+        data.groups.forEach( function(group) {
           if ($("#groupslist ul").find("[data-id='" + group.group_id + "']").size() == 0) {
             $("#groupslist ul").prepend("\
                                         <li class='group' data-id='"+ group.group_id +"' data-name='"+ group.name +" 'data-updatedat='"+ group.last_updated +"'>\
@@ -183,21 +180,17 @@ function groupsPoll(params) {
 };
 
 function messagesPoll(params) {
-  var chatroom = ".chatroom[data-id='"+params.group_id+"']"
-  var alltimes = $(chatroom+" .message").map(function(){
-    return $(this).data('updatedat');
-  }).get();
-  params.last_updated = alltimes.sort().slice(-1)[0];
+  var chatroom = ".chatroom[data-id='"+params.group_id+"']";
   setTimeout(function () {
     $.ajax({
       type: 'POST',
       dataType: 'json',
       data: params,
-      url: 'http://localhost:3000/v1/messages/all',
+      url: domain+'groups/get_messages/',
       success: function (data) {
-        data.forEach( function(message) {
-          $(".message[data-id='"+message.id+"']").remove() // remove old
-          $(chatroom+" ul").append(htmlMessage(message));
+        data.messages.forEach( function(message) {
+          $(".message[data-id='"+message.msg_id+"']").remove(); // remove old
+          $(chatroom+" ul").prepend(htmlMessage(message));
         });
         $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
       },
