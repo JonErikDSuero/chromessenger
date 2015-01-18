@@ -20,6 +20,10 @@ var CME_css = (function () {
     margin: 3px 0px !important; \
     background: #aaccff !important; \
   } \
+  .comments-closed .highlights{ \
+    size: inherit; \
+    background-color: inherit; \
+  } \
   .highlights { \
     size: inherit; \
     background-color: rgba(255,247,148,0.9); \
@@ -39,6 +43,12 @@ var CME_css = (function () {
     -moz-user-select: none; \
     -ms-user-select: none; \
     user-select: none; \
+  } \
+  .comments-open #comments-body{ \
+    display: block; \
+  } \
+  .comments-closed #comments-body { \
+    display: none; \
   } \
   .comments-right #comments-body { \
     top: 0; \
@@ -133,6 +143,12 @@ var CME_css = (function () {
     bottom: 0; \
     font-size: 14px; \
   } \
+  .comments-open #activate-comment{ \
+    display: block; \
+  } \
+  .comments-closed #activate-comment { \
+    display: none; \
+  } \
   .comments-right #activate-comment{ \
     left: 0; \
   } \
@@ -150,6 +166,45 @@ var CME_css = (function () {
     cursor: pointer; \
     opacity: 1; \
     background-color: rgba(102,102,102,1); \
+  } \
+  .close-thik { \
+    color: rgba(102,102,102, 0.4); \
+    position: absolute; \
+    text-decoration: none; \
+    top: 12px; \
+    cursor: pointer; \
+  } \
+  .comments-right .close-thik { \
+    right: 17px; \
+  } \
+  .comments-left .close-thik { \
+    left: 17px; \
+  } \
+  .close-thik:after { \
+    font-size:30px; \
+    content: '✖';  \
+  } \
+  #open-the-comments{ \
+    position: fixed; \
+    padding: 5px; \
+    background-color: rgba(85,85,85,0.9); \
+    bottom: 0; \
+    left: 0; \
+    z-index: 10000; \
+    cursor: pointer; \
+    color: #eee; \
+    font-size: 16px; \
+  } \
+  #open-the-comments:hover { \
+    background-color: rgba(236,236,236,1); \
+    color: #333; \
+    cursor: pointer; \
+  } \
+  .comments-closed #open-the-comments{ \
+    display: block; \
+  } \
+  .comments-open #open-the-comments{ \
+    display: none; \
   } \
   ";
 
