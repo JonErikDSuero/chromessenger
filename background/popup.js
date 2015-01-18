@@ -91,6 +91,7 @@ function createMessage(text){
   } else {
     json = {text: text};
   }
+  console.log("PRINT:" + json);
   return json
 }
 
@@ -207,14 +208,14 @@ function htmlMessage(message){
   if (json.text != undefined){ //  Simple Text
     html+="<p>"+json.text+"</p>";
   } else { //voting list
-    var obj = JSON.parse(json);
-    for (index = 0; index < obj.length; ++index) {
-        var isChecked = "unchecked";
-        if ($.inArray(user_id, obj[index].voters) > -1) {
-            isChecked = "checked";
-        }
-        html+="<input type='radio' name='votes' onchange='onChangeListener(event);' value='" + obj[index].name + "'" + isChecked + ">" + obj[index].name + "<br>";
-    }
+    console.log(json);
+    for (index = 0; index < json.length; ++index) {
+       var isChecked = "unchecked";
+       if ($.inArray(user_id, json[index].voters) > -1) {
+           isChecked = "checked";
+       }
+       html+="<input class='vote' data-msgid='"+message.msg_id+"' data-choice='"+json[index].name+"' type='checkbox' name='votes' value='" + json[index].name + "'>" + json[index].name + "<br>";
+   }
   }
 
   html += "<p class='sender'>- "+message.sender+"</p>";
@@ -223,6 +224,7 @@ function htmlMessage(message){
 }
 
 function onChangeListener(event) {
+    debugger;
     if (event != null) {
         params = {choice: event.target.value, user_id: user_id};
         $.post(domain+"groups/update_message/", params, function(data){
