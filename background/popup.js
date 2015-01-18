@@ -214,13 +214,12 @@ function htmlMessage(message){
   if (json.text != undefined){ //  Simple Text
     html+="<p>"+json.text+"</p>";
   } else { //voting list
-    var obj = JSON.parse(json);
-    for (index = 0; index < obj.length; ++index) {
+    for (index = 0; index < json.length; ++index) {
         var isChecked = "unchecked";
-        if ($.inArray(user_id, obj[index].voters) > -1) {
+        if ($.inArray(user_id, json[index].voters) > -1) {
             isChecked = "checked";
         }
-        html+="<input type='radio' name='votes' onchange='onChangeListener(event);' value='" + obj[index].name + "'" + isChecked + ">" + obj[index].name + "<br>";
+        html+="<input type='radio' name='votes' onchange='onChangeListener(event);' value='" + json[index].name + "'" + isChecked + ">" + json[index].name + "<br>";
     }
   }
   html += "<p class='sender'>- "+message.sender+"</p>";
