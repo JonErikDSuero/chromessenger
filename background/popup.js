@@ -1,4 +1,5 @@
-var domain = "https://morning-refuge-4780.herokuapp.com/";
+//var domain = "https://morning-refuge-4780.herokuapp.com/";
+var domain = "http://localhost:8000/";
 var username = undefined;
 var user_id = undefined;
 
@@ -113,8 +114,8 @@ function setupTextAreas(){
       if (json != undefined) {
         params = {
           group_name: groupname,
-          members: members,
-          text: json,
+          members: JSON.stringify(members),
+          text: JSON.stringify(json),
           user_id: user_id
         }
 
@@ -243,8 +244,8 @@ function setupTokenInputs(){
   params = {name: username}
   console.log(username);
   $.post(domain+"groups/friends_autocomplete/", params, function(data){
-    console.log(friends);
     friends = data;
+    console.log(friends);
     $("#addmembers").tokenInput(friends,
                                 { minChars: 3,
                                   queryParam: "search_q",
