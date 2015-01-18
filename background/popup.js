@@ -156,9 +156,16 @@ function htmlMessage(message){
 
 
 var selectedFriends = [];
+var friends = [];
+
+params = {name: username}
+
+$.post(domain+"groups/friend_autocomplete", params, function(data){
+    friend = data;
+});
 
 function setupTokenInputs(){
-  $("#addmembers").tokenInput("http://salty-meadow-1570.herokuapp.com/groups/friends_autocomplete?name=pranay",
+  $("#addmembers").tokenInput(friend,
                               { minChars: 3,
                                 queryParam: "search_q",
                                 method: "GET",
