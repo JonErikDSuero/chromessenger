@@ -1,13 +1,47 @@
-var domain = "http://salty-meadow-1570.herokuapp.com/";
+var domain = "https://morning-refuge-4780.herokuapp.com/";
+var username = undefined;
+var user_id = undefined;
 
 document.addEventListener('DOMContentLoaded', function () {
-  params = {hello: "hi"}
-  groupsPoll(params); // pass the last updated_at
-
-  setupGroupsList();
-  setupTokenInputs();
+  // get username and user_id
+  chrome.storage.local.get(['username','user_id'], function(data) {
+    username = data.username;
+    user_id = data.user_id;
+    if (username == undefined || user_id == undefined) {
+      $("#login").show();
+      $("#messenger").hide();
+      setupLoginPage();
+    } else {
+      afterLoggedIn();
+    }
+  });
 });
 
+function afterLoggedIn(){
+  $("#login").hide();
+  $("#messenger").show();
+
+  //groupsPoll({user_id: user_id}); // pass the last updated_at
+  setupGroupsList();
+  setupTokenInputs();
+  setupTextAreas();
+}
+
+function setupLoginPage(){
+  $('#login').on('submit', function(e) {
+
+    e.preventDefault();
+    $.ajax({
+      url : domain+"groups/chrome/login/?name="+$("input[name='name']").val(),
+      type: "GET",
+      data: $(this).serialize(),
+      success: function (data) {
+        chrome.storage.local.set({username: data.user_name, user_id: data.user_id}, null);
+        afterLoggedIn();
+      }
+    });
+  });
+}
 
 function setupGroupsList(){
   $('body').on('click', '#groupslist li', function(e) {
@@ -42,20 +76,77 @@ function setupCloseButtons(){
   });
 };
 
+function createMessage(text){
+  var json = {}
+  var list = ["A","B","C"];
+
+  if (text == ":list"){
+    json = {list: list}
+  } else if (text == ":vote") {
+    json = [];
+    list.forEach(function(entry) {
+      json.push({name: entry, count: 0});
+    });
+  } else {
+    json = {text: text};
+  }
+  return json
+}
 
 function setupTextAreas(){
+
+  $("#newchatinput").keyup(function (e) {
+    if (e.keyCode == 13) {
+      console.log("entered!!!");
+      var focused = $(':focus');
+      var text = focused.val().trim();
+      var json = createMessage(text);
+      var groupname = $("input[name='newgroupname']").val();
+      var members = selectedFriends.map(function(f) {
+        return {id: f.id, name: f.name};
+      });
+      members.push({id: user_id, name: username});
+      console.log(members);
+      console.log(json);
+      debugger;
+
+      if (json != undefined) {
+        params = {
+          group_name: groupname,
+          members: members,
+          text: json,
+          user_id: user_id
+        }
+
+        $.post(domain+"groups/add_group/", params, function(data){
+          debugger;
+        });
+      }
+
+      $("#addmembers").tokenInput("clear");
+      focused.val("");
+      $("input[name='newgroupname']").val("");
+    }
+  });
+
+
+
   $(".chatinput").keyup(function (e) {
     if (e.keyCode == 13) {
       var focused = $(':focus');
+      var text = focused.val().trim();
+      var json = createMessage(text);
 
-      params = {
-        user_id: "..",
-        group_id: focused.parent().data("id"),
-        text: {text: focused.val().trim()}
+      if (json != undefined) {
+        params = {
+          user_id: user_id,
+          group_id: focused.parent().data("id"),
+          text: json
+        }
+
+        $.post(domain+"groups/add_message/", params, function(data){
+        });
       }
-
-      $.post(domain+"groups/add_message/", params, function(data){
-      });
 
       focused.val("");
     }
@@ -64,17 +155,21 @@ function setupTextAreas(){
 
 
 function groupsPoll(params) {
+  var alltimes = $('.group').map(function(){
+    return $(this).data('updatedat');
+  }).get();
+  params.last_updated = alltimes.sort().slice(-1)[0];
   setTimeout(function () {
     $.ajax({
       type: 'POST',
       dataType: 'json',
       data: params,
-      url: 'http://localhost:3000/v1/messages/groups',
+      url: domain+'/groups/get_groups/',
       success: function (data) {
         data.forEach( function(group) {
-          if ($("#groupslist ul").find("[data-id='" + group.id + "']").size() == 0) {
+          if ($("#groupslist ul").find("[data-id='" + group.group_id + "']").size() == 0) {
             $("#groupslist ul").prepend("\
-                                        <li class='group' data-id='"+ group.id +"' data-status='new' data-name='"+ group.name +"'>\
+                                        <li class='group' data-id='"+ group.group_id +"' data-name='"+ group.name +" 'data-updatedat='"+ group.last_updated +"'>\
                                         "+group.name+"\
                                         </li>\
                                         ");
@@ -87,6 +182,11 @@ function groupsPoll(params) {
 };
 
 function messagesPoll(params) {
+  var chatroom = ".chatroom[data-id='"+params.group_id+"']"
+  var alltimes = $(chatroom+" .message").map(function(){
+    return $(this).data('updatedat');
+  }).get();
+  params.last_updated = alltimes.sort().slice(-1)[0];
   setTimeout(function () {
     $.ajax({
       type: 'POST',
@@ -94,7 +194,6 @@ function messagesPoll(params) {
       data: params,
       url: 'http://localhost:3000/v1/messages/all',
       success: function (data) {
-        var chatroom = ".chatroom[data-id='"+params.group_id+"']"
         data.forEach( function(message) {
           $(".message[data-id='"+message.id+"']").remove() // remove old
           $(chatroom+" ul").append(htmlMessage(message));
@@ -107,10 +206,10 @@ function messagesPoll(params) {
 };
 
 function htmlMessage(message){
-  var json = message.body;
-  html = "<li class='message' data-id='"+message.id+"'>";
+  var json = message.text;
+  html = "<li class='message' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
   if (json.text != undefined){ //  Simple Text
-    html+="<p>"+json.text+"</p>"
+    html+="<p>"+json.text+"</p>";
   } else if (json.votelist != undefined){ //voting list
 
   }
@@ -122,28 +221,33 @@ function htmlMessage(message){
 
 
 var selectedFriends = [];
+var friends = [];
 
 function setupTokenInputs(){
-  $("#addmembers").tokenInput("http://salty-meadow-1570.herokuapp.com/groups/friends_autocomplete?name=pranay",
-                              { minChars: 3,
-                                queryParam: "search_q",
-                                method: "GET",
-                                propertyToSearch: "name",
-                                hintText: "Find your facebook friends",
-                                noResultsText: "No results. Invite your friend to use this app.",
-                                searchingText: "Loading ...",
-                                deleteText: "x",
-                                theme: "facebook",
-                                resultsFormatter: function(item) {return "<li>" + item.name + "</li>"},
-                                tokenFormatter: function(item) { return "<li><p>" + item.name + "</p></li>"},
-                                preventDuplicates: true,
-                                onAdd: function(item) {
-                                  selectedFriends.push(item);
-                                  console.log(selectedFriends);
-                                },
-                                onDelete: function(item) {
-                                  selectedFriends.splice($.inArray(item, selectedFriends),1);
-                                  console.log(selectedFriends);
-                                }
-                              });
+  params = {name: username}
+  console.log(username);
+  $.post(domain+"groups/friends_autocomplete/", params, function(data){
+    console.log(friends);
+    friends = data;
+    $("#addmembers").tokenInput(friends,
+                                { minChars: 3,
+                                  queryParam: "search_q",
+                                  method: "GET",
+                                  propertyToSearch: "name",
+                                  hintText: "Find your facebook friends",
+                                  noResultsText: "No results. Invite your friend to use this app.",
+                                  searchingText: "Loading ...",
+                                  deleteText: "x",
+                                  theme: "facebook",
+                                  resultsFormatter: function(item) {return "<li>" + item.name + "</li>"},
+                                  tokenFormatter: function(item) { return "<li><p>" + item.name + "</p></li>"},
+                                  preventDuplicates: true,
+                                  onAdd: function(item) {
+                                    selectedFriends.push(item);
+                                  },
+                                  onDelete: function(item) {
+                                    selectedFriends.splice($.inArray(item, selectedFriends),1);
+                                  }
+                                });
+  });
 }
