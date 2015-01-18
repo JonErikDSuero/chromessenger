@@ -86,7 +86,7 @@ function createMessage(text){
     json = [];
     var votingList = localStorage["voting-list-dom"].split("#:#");
     votingList.forEach(function(entry) {
-      json.push({name: entry, voters: []});
+      json.push({name: entry, voters: [], count: 0});
     });
   } else {
     json = {text: text};
@@ -117,7 +117,6 @@ function setupTextAreas(){
         }
 
         $.post(domain+"groups/add_group/", params, function(data){
-          debugger;
         });
       }
 
@@ -186,15 +185,19 @@ function messagesPoll(params) {
       success: function (data) {
         if (data.messages.length > 0) {
           data.messages.forEach( function(message) {
-            if ($(".message[data-id='"+message.msg_id+"']").size() == 0) {
+            var old_element = $(".message[data-id='"+message.msg_id+"']")[0];
+            if (old_element == undefined) {
               $(chatroom+" ul").append(htmlMessage(message));
               $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
+            } else if (old_element.data("updatedat") == message.last_updated_at) {
+              debugger;
+              old_element.replaceWith(htmlMessage(message));
             }
             if (params.latest_id < message.msg_id) {
               params.latest_id = message.msg_id
             }
           });
-          console.log(params.latest_id);
+          setupCheckboxes();
         }
       },
       complete: messagesPoll(params)
@@ -206,33 +209,50 @@ function htmlMessage(message){
   var json = message.text;
 
   if(message.sender == username){
-      html = "<li class='message me' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
+    html = "<li class='message me' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
   } else {
-      html = "<li class='message not-me' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
+    html = "<li class='message not-me' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
   }
-  
+
   if (json.text != undefined){ //  Simple Text
+
     html+="<p>"+json.text+"</p>";
+
   } else { //voting list
     for (index = 0; index < json.length; ++index) {
-        var isChecked = "unchecked";
-        if ($.inArray(user_id, json[index].voters) > -1) {
-            isChecked = "checked";
-        }
-        html+="<input type='radio' name='votes' onchange='onChangeListener(event);' value='" + json[index].name + "'" + isChecked + ">" + json[index].name + "<br>";
+      var isChecked = "unchecked";
+      if ($.inArray(user_id, json[index].voters) > -1) {
+        isChecked = "checked";
+      }
+      html+="<input class='voteb' type='checkbox' name='votes' value='" + json[index].name + "' "+isChecked+">" +json[index].count+":"+json[index].name + "<br>";
     }
   }
-  html += "<p class='sender'>- "+message.sender+"</p>";
+
+  html += "<p class='sender'>- "+message.sender+message.msg_id+"</p>";
   html += "</li>";
   return html;
 }
 
-function onChangeListener(event) {
-    if (event != null) {
-        params = {choice: event.target.value, user_id: user_id};
-        $.post(domain+"groups/update_message/", params, function(data){
-        });            
+function setupCheckboxes() {
+  $('body').on('click', '.voteb', function(e) {
+
+    params = {
+      choice: event.target.value,
+      user_id: user_id,
+      msg_id: e.target.parentElement.dataset.id
     }
+
+    if (e.target.checked) { // then recently checked
+      $.post(domain+"groups/update_message/", params, function(data){
+        e.target.parentElement.remove();
+      });
+
+    } else {
+      $.post(domain+"groups/delete_vote/", params, function(data){
+        e.target.parentElement.remove();
+      });
+    }
+  });
 }
 
 var selectedFriends = [];
@@ -240,7 +260,6 @@ var friends = [];
 
 function setupTokenInputs(){
   params = {name: username}
-  console.log(username);
   $.post(domain+"groups/friends_autocomplete/", params, function(data){
     friends = data;
     console.log(friends);
