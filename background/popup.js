@@ -182,14 +182,14 @@ function htmlMessage(message){
 var selectedFriends = [];
 var friends = [];
 
-params = {name: username}
-
-$.post(domain+"groups/friend_autocomplete", params, function(data){
-    friend = data;
-});
-
 function setupTokenInputs(){
-  $("#addmembers").tokenInput(friend,
+  params = {name: username}
+  console.log(username);
+  $.post(domain+"groups/friends_autocomplete/", params, function(data){
+    console.log(friends);
+    friends = data;
+
+    $("#addmembers").tokenInput(friends,
                               { minChars: 3,
                                 queryParam: "search_q",
                                 method: "GET",
@@ -211,4 +211,5 @@ function setupTokenInputs(){
                                   console.log(selectedFriends);
                                 }
                               });
+  });
 }
