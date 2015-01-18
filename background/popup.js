@@ -235,7 +235,7 @@ function htmlMessage(message){
     }
   }
 
-  html += "<p class='sender'>- "+message.sender+message.msg_id+"</p>";
+  html += "<p class='sender'>- "+message.sender+"</p>";
   html += "</li>";
   return html;
 }
