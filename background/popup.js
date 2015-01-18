@@ -188,7 +188,7 @@ function messagesPoll(params) {
           console.log(data.messages);
           data.messages.forEach( function(message) {
             $(chatroom+" ul").prepend(htmlMessage(message));
-            if params.latest_id < message.msg_id:
+            if params.latest_id < message.msg_id
               params.latest_id = message.msg_id
           });
           $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
