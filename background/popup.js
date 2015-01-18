@@ -1,5 +1,5 @@
 //var domain = "https://morning-refuge-4780.herokuapp.com/";
-var domain = "http://localhost:8000/";
+var domain = "http://morning-refuge-4780.herokuapp.com/";
 var username = undefined;
 var user_id = undefined;
 
@@ -85,8 +85,9 @@ function createMessage(text){
     json = {list: list}
   } else if (text == ":vote") {
     json = [];
-    list.forEach(function(entry) {
-      json.push({name: entry, count: 0});
+    var votingList = localStorage["voting-list-dom"].split("#:#");
+    votingList.forEach(function(entry) {
+      json.push({name: entry, voters: []});
     });
   } else {
     json = {text: text};
@@ -167,7 +168,7 @@ function groupsPoll(params) {
       data: params,
       url: domain+'/groups/get_groups/',
       success: function (data) {
-        data.forEach( function(group) {
+        data.groups.forEach( function(group) {
           if ($("#groupslist ul").find("[data-id='" + group.group_id + "']").size() == 0) {
             $("#groupslist ul").prepend("\
                                         <li class='group' data-id='"+ group.group_id +"' data-name='"+ group.name +" 'data-updatedat='"+ group.last_updated +"'>\
@@ -213,6 +214,14 @@ function htmlMessage(message){
     html+="<p>"+json.text+"</p>";
   } else if (json.votelist != undefined){ //voting list
 
+    var obj = JSON.parse(json);
+    for (index = 0; index < obj.length; ++index) {
+        var isChecked = "unchecked";
+        if ($.inArray(user_id, obj[index].voters) > -1) {
+            isChecked = "checked";
+        }
+        html+="<input type='radio' name='votes' onchange='onChangeListener(event);' value='" + obj[index].name + "'" + isChecked + ">" + obj[index].name + "<br>";
+    }
   }
 
   html += "<p class='sender'>- "+message.sender+"</p>";
@@ -220,6 +229,13 @@ function htmlMessage(message){
   return html;
 }
 
+function onChangeListener(event) {
+    if (event != null) {
+        params = {choice: event.target.value, user_id: user_id};
+        $.post(domain+"groups/update_message/", params, function(data){
+        });            
+    }
+}
 
 var selectedFriends = [];
 var friends = [];
