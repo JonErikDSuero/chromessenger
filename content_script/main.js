@@ -117,8 +117,7 @@ $(function(){
 		if(getSelectionText().length >= 2) {
 			var voting_dom = '';
 			var voting_dom_target = e.target;
-			while(voting_dom_target != null && 
-				voting_dom_target.tagName != "UL" && 
+			while(voting_dom_target.tagName != "UL" && 
 				voting_dom_target.tagName != "OL" &&
 				voting_dom_target.tagName != "TBODY") {
 					if(voting_dom != '')
@@ -126,11 +125,13 @@ $(function(){
 					else
 						voting_dom = voting_dom_target.tagName.toLowerCase();
 					voting_dom_target = voting_dom_target.parentElement;
+					if(voting_dom_target == null)
+						return;
 			}
 			console.log('voting dom: '+voting_dom);
 			var voting_list = [];
 			$(voting_dom).each(function() {
-				if($(this).text().match(/[0-9a-zA-Z]+/)) {
+				if($(this).text().match(/[0-9a-zA-Z]+/) && voting_list.length <= 10) {
 		        	voting_list.push($(this).text());
 		    	}
 		    });
