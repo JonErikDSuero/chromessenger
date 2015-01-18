@@ -21,9 +21,10 @@ function afterLoggedIn(){
   $("#login").hide();
   $("#messenger").show();
 
-  groupsPoll({user_id: user_id}); // pass the last updated_at
+  //groupsPoll({user_id: user_id}); // pass the last updated_at
   setupGroupsList();
   setupTokenInputs();
+  setupTextAreas();
 }
 
 function setupLoginPage(){
@@ -75,26 +76,66 @@ function setupCloseButtons(){
   });
 };
 
+function createMessage(text){
+  var json = {}
+  var list = ["A","B","C"];
+
+  if (text == ":list"){
+    json = {list: list}
+  } else if (text == ":vote") {
+    json = [];
+    list.forEach(function(entry) {
+      json.push({name: entry, count: 0});
+    });
+  } else {
+    json = {text: text};
+  }
+  return json
+}
 
 function setupTextAreas(){
+
+  $("#newchatinput").keyup(function (e) {
+    if (e.keyCode == 13) {
+      console.log("entered!!!");
+      var focused = $(':focus');
+      var text = focused.val().trim();
+      var json = createMessage(text);
+      var groupname = $("input[name='newgroupname']").val();
+      var members = selectedFriends.map(function(f) {
+        return {id: f.id, name: f.name};
+      });
+      members.push({id: user_id, name: username});
+      console.log(members);
+      console.log(json);
+      debugger;
+
+      if (json != undefined) {
+        params = {
+          group_name: groupname,
+          members: members,
+          text: json,
+          user_id: user_id
+        }
+
+        $.post(domain+"groups/add_group/", params, function(data){
+          debugger;
+        });
+      }
+
+      $("#addmembers").tokenInput("clear");
+      focused.val("");
+      $("input[name='newgroupname']").val("");
+    }
+  });
+
+
+
   $(".chatinput").keyup(function (e) {
     if (e.keyCode == 13) {
       var focused = $(':focus');
       var text = focused.val().trim();
-      var json = {}
-      var list = ["A","B","C"];
-
-      // add filters
-      if (text == ":list"){
-        json = {list: list}
-      } else if (text == ":vote") {
-        json = [];
-        list.forEach(function(entry) {
-          json.push({name: entry, count: 0});
-        });
-      } else {
-        json = {text: text};
-      }
+      var json = createMessage(text);
 
       if (json != undefined) {
         params = {
@@ -188,28 +229,25 @@ function setupTokenInputs(){
   $.post(domain+"groups/friends_autocomplete/", params, function(data){
     console.log(friends);
     friends = data;
-
     $("#addmembers").tokenInput(friends,
-                              { minChars: 3,
-                                queryParam: "search_q",
-                                method: "GET",
-                                propertyToSearch: "name",
-                                hintText: "Find your facebook friends",
-                                noResultsText: "No results. Invite your friend to use this app.",
-                                searchingText: "Loading ...",
-                                deleteText: "x",
-                                theme: "facebook",
-                                resultsFormatter: function(item) {return "<li>" + item.name + "</li>"},
-                                tokenFormatter: function(item) { return "<li><p>" + item.name + "</p></li>"},
-                                preventDuplicates: true,
-                                onAdd: function(item) {
-                                  selectedFriends.push(item);
-                                  console.log(selectedFriends);
-                                },
-                                onDelete: function(item) {
-                                  selectedFriends.splice($.inArray(item, selectedFriends),1);
-                                  console.log(selectedFriends);
-                                }
-                              });
+                                { minChars: 3,
+                                  queryParam: "search_q",
+                                  method: "GET",
+                                  propertyToSearch: "name",
+                                  hintText: "Find your facebook friends",
+                                  noResultsText: "No results. Invite your friend to use this app.",
+                                  searchingText: "Loading ...",
+                                  deleteText: "x",
+                                  theme: "facebook",
+                                  resultsFormatter: function(item) {return "<li>" + item.name + "</li>"},
+                                  tokenFormatter: function(item) { return "<li><p>" + item.name + "</p></li>"},
+                                  preventDuplicates: true,
+                                  onAdd: function(item) {
+                                    selectedFriends.push(item);
+                                  },
+                                  onDelete: function(item) {
+                                    selectedFriends.splice($.inArray(item, selectedFriends),1);
+                                  }
+                                });
   });
 }
