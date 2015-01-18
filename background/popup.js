@@ -185,16 +185,16 @@ function messagesPoll(params) {
       success: function (data) {
         if (data.messages.length > 0) {
           data.messages.forEach( function(message) {
-            var old_element = $(".message[data-id='"+message.msg_id+"']")[0];
-            if (old_element == undefined) {
+            if ($(".message[data-id='"+message.msg_id+"']").size() == 0){
               $(chatroom+" ul").append(htmlMessage(message));
               $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
-            } else if (old_element.data("updatedat") == message.last_updated_at) {
-              debugger;
-              old_element.replaceWith(htmlMessage(message));
+            } else {
+              if ($(".message[data-id='"+message.msg_id+"']").data("updatedat") != message.last_updated) {
+                $(".message[data-id='"+message.msg_id+"']").replaceWith(htmlMessage(message));
+              }
             }
-            if (params.latest_id < message.msg_id) {
-              params.latest_id = message.msg_id
+            if (params.last_updated < message.last_updated) {
+              params.last_updated = message.last_updated
             }
           });
           setupCheckboxes();
@@ -220,11 +220,18 @@ function htmlMessage(message){
 
   } else { //voting list
     for (index = 0; index < json.length; ++index) {
+      console.log(json[index].voters);
       var isChecked = "unchecked";
-      if ($.inArray(user_id, json[index].voters) > -1) {
+      if ($.inArray(JSON.stringify(user_id), json[index].voters) > -1) {
         isChecked = "checked";
       }
-      html+="<input class='voteb' type='checkbox' name='votes' value='" + json[index].name + "' "+isChecked+">" +json[index].count+":"+json[index].name + "<br>";
+      var count;
+      if (json[index].count == undefined){
+        count = 0;
+      } else {
+        count = json[index].count;
+      }
+      html+="<input class='voteb' type='checkbox' name='votes' value='" + json[index].name + "' "+isChecked+">"+"["+count+"]"+json[index].name + "<br>";
     }
   }
 
