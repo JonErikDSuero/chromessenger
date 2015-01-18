@@ -6,7 +6,7 @@ CME_css.apply();
 
 // CME_body.setup();
 var id = 1;
-var time_fetch;
+var latest_id;
 
 function getTime(){
 	var current = new Date();
@@ -59,11 +59,14 @@ function populateCommentBody(){
 		data: { 
 			"url" : window.location.href,
 			"group_id" : "1",
+			"id_latest": latest_id
 		},
 		dataType: "json"
 	});
 	request.done(function(data){
+		latest_id = data.comments[0].comment_id;
 		console.log(data);
+		console.log(latest_id);
 		var i;
 		for(i = 0; i < data.comments.length; i++){
 			placeComment(data.comments[i]);
@@ -176,7 +179,7 @@ $(function(){
 				console.log(data);
 				$('#comments-body').prepend(" \
 				<div class='comment' id='new-"+id+"'>"+commentText+"</div> \
-		    	").find('#new-'+id).css({
+		    	").find('#new-'+data.id).css({
 		    		position: "absolute",
 		    		top: $(selector).offset().top+"px"
 		    	});
@@ -217,12 +220,16 @@ $(function(){
 			data: { 
 				"url" : window.location.href,
 				"group_id" : "1",
-				"time": getTime()
+				"latest_id": latest_id
 			},
 			dataType: "json"
 		});
 		request.done(function(data){
-			time_fetch = getTime();
+			console.log(latest_id);
+			if(data.comments.length == 0){
+				return;
+			}
+			latest_id = data.comments[0].comment_id;
 			var i;
 			for(i = 0; i < data.comments.length; i++){
 				placeComment(data.comments[i]);
@@ -231,6 +238,6 @@ $(function(){
 		request.fail(function(jqXHR, textStatus){
 			console.log(textStatus);
 		});
-	}, 1000);
+	}, 2000);
 
 });
