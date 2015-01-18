@@ -3,9 +3,6 @@
   <head>
     <link rel="stylesheet" type="text/css" href="popup.css">
     <script src="../lib/jquery-2.1.1.min.js"></script>
-    <script src="body.js"></script>
-    <script src="domain.js"></script>
-    <script src="messenger.js"></script>
     <script src="popup.js"></script>
     <script src="jquery.tokeninput.js"></script>
     <link rel="stylesheet" type="text/css" href="/js/jquery.tokenize.css" />
@@ -20,20 +17,29 @@
   </head>
 
 <body>
-
-  <div id="groupslist">
-    <h4>Chatrooms</h4>
-    <ul></ul>
+  <div id='login'>
+    <form id='login' method='get' action="https://morning-refuge-4780.herokuapp.com/groups/chrome_login/">
+      Username: <input type="text" name="name"><br>
+      Password: <input type="password" name="password"><br>
+      <input type="submit" value="Submit">
+    </form>
   </div>
 
-  <div id="chatrooms">
-    <div class='chatroom'>
-      <h4>New</h4>
-      <div class='messages'>
-        <input type="text" id="addmembers" name="blah" />
-        <input type="button" value="Submit" />
+  <div id='messenger'>
+    <div id="groupslist">
+      <h4>Chatrooms</h4>
+      <ul></ul>
+    </div>
+
+    <div id="chatrooms">
+      <div class='chatroom'>
+        <h4>New</h4>
+        <div class='messages'>
+          <input type="text" id="addmembers" name="blah" />
+          <input type="button" value="Submit" />
+        </div>
+        <textarea class='chatinput'></textarea>
       </div>
-      <textarea class='chatinput'></textarea>
     </div>
   </div>
 

@@ -1,13 +1,47 @@
-var domain = "http://salty-meadow-1570.herokuapp.com/";
+var domain = "https://morning-refuge-4780.herokuapp.com/";
+var username = "";
+var user_id = "";
 
 document.addEventListener('DOMContentLoaded', function () {
-  params = {hello: "hi"}
+  // get username and user_id
+  chrome.storage.local.get(['username','user_id'], function(data) {
+    console.log(data);
+    var username = data.username;
+    var user_id = data.user_id;
+    console.log(username);
+    if (username == undefined || user_id == undefined) {
+      $("#login").show();
+      $("#messenger").hide();
+      setupLoginPage();
+    } else {
+      $("#login").hide();
+      $("#messenger").show();
+    }
+  });
+
+  params = {user_id: user_id}
   groupsPoll(params); // pass the last updated_at
 
   setupGroupsList();
   setupTokenInputs();
 });
 
+function setupLoginPage(){
+  $('#login').on('submit', function(e) {
+
+    e.preventDefault();
+    $.ajax({
+      url : domain+"groups/chrome/login/?name="+$("input[name='name']").val(),
+      type: "GET",
+      data: $(this).serialize(),
+      success: function (data) {
+        chrome.storage.local.set({username: data.user_name, user_id: data.user_id}, null);
+        $("#login").hide();
+        $("#messenger").show();
+      }
+    });
+  });
+}
 
 function setupGroupsList(){
   $('body').on('click', '#groupslist li', function(e) {
