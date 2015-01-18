@@ -207,11 +207,20 @@ function messagesPoll(params) {
 
 function htmlMessage(message){
   var json = message.text;
+  console.log(message)
   html = "<li class='message' data-id='"+message.msg_id+"' data-updatedat='"+message.last_updated+"'>";
+
   if (json.text != undefined){ //  Simple Text
     html+="<p>"+json.text+"</p>";
-  } else if (json.votelist != undefined){ //voting list
-
+  } else { //voting list
+    var obj = JSON.parse(json);
+    for (index = 0; index < obj.length; ++index) {
+        var isChecked = "unchecked";
+        if ($.inArray(user_id, obj[index].voters) > -1) {
+            isChecked = "checked";
+        }
+        html+="<input type='radio' name='votes' onchange='onChangeListener(event);' value='" + obj[index].name + "'>" + obj[index].name + "<br>";
+    }
   }
 
   html += "<p class='sender'>- "+message.sender+"</p>";
@@ -219,6 +228,13 @@ function htmlMessage(message){
   return html;
 }
 
+function onChangeListener(event) {
+    if (event != null) {
+        params = {choice: event.target.value, user_id: user_id};
+        $.post(domain+"groups/update_message/", params, function(data){
+        });            
+    }
+}
 
 var selectedFriends = [];
 var friends = [];
