@@ -185,14 +185,15 @@ function messagesPoll(params) {
       url: domain+'groups/get_messages/',
       success: function (data) {
         if (data.messages.length > 0) {
-          console.log(data.messages);
           data.messages.forEach( function(message) {
-            $(chatroom+" ul").prepend(htmlMessage(message));
+            if ($(".message[data-id='"+message.msg_id+"']").size() == 0) {
+              $(chatroom+" ul").append(htmlMessage(message));
+              $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
+            }
             if (params.latest_id < message.msg_id) {
               params.latest_id = message.msg_id
             }
           });
-          $(chatroom+" .messages").scrollTop($(chatroom+" .messages")[0].scrollHeight);
           console.log(params.latest_id);
         }
       },
