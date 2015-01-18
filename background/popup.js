@@ -244,12 +244,10 @@ function setupCheckboxes() {
 
     if (e.target.checked) { // then recently checked
       $.post(domain+"groups/update_message/", params, function(data){
-        e.target.parentElement.remove();
       });
 
     } else {
       $.post(domain+"groups/delete_vote/", params, function(data){
-        e.target.parentElement.remove();
       });
     }
   });
