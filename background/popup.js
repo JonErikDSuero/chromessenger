@@ -1,5 +1,5 @@
-//var domain = "https://morning-refuge-4780.herokuapp.com/";
-var domain = "http://localhost:8000/";
+var domain = "https://morning-refuge-4780.herokuapp.com/";
+//var domain = "http://localhost:8000/";
 var username = undefined;
 var user_id = undefined;
 
@@ -22,7 +22,7 @@ function afterLoggedIn(){
   $("#login").hide();
   $("#messenger").show();
 
-  //groupsPoll({user_id: user_id}); // pass the last updated_at
+  groupsPoll({user_id: user_id}); // pass the last updated_at
   setupGroupsList();
   setupTokenInputs();
   setupTextAreas();
@@ -107,9 +107,6 @@ function setupTextAreas(){
         return {id: f.id, name: f.name};
       });
       members.push({id: user_id, name: username});
-      console.log(members);
-      console.log(json);
-      debugger;
 
       if (json != undefined) {
         params = {
